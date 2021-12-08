@@ -30,5 +30,11 @@ fn main() {
             });
     }
 
-    println!("{:#?}", current_generation.into_iter().map(|(_, fish_count)| fish_count).sum::<u64>());
+    println!(
+        "{:#?}",
+        current_generation
+            .into_iter()
+            .map(|(_, fish_count)| fish_count)
+            .sum::<u64>()
+    );
 }

@@ -1,4 +1,9 @@
-use std::{collections::HashMap, convert::Infallible, str::FromStr, io::{BufRead, Cursor}};
+use std::{
+    collections::HashMap,
+    convert::Infallible,
+    io::{BufRead, Cursor},
+    str::FromStr,
+};
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 struct Coordinate {
@@ -40,12 +45,11 @@ impl FromStr for Line {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let coordinates: Vec<Coordinate> = s.split(" -> ").map(|c| c.parse().unwrap()).collect();
-        Ok(Line{
+        Ok(Line {
             start: coordinates[0].clone(),
             end: coordinates[1].clone(),
         })
     }
-
 }
 
 #[derive(Debug)]
@@ -116,22 +120,28 @@ impl Iterator for CoordinateIterator {
 }
 
 fn main() {
-    let input = Cursor::new(include_str!("real_input")).lines().collect::<Result<Vec<_>, _>>().unwrap();
-    println!("{:#?}",
+    let input = Cursor::new(include_str!("real_input"))
+        .lines()
+        .collect::<Result<Vec<_>, _>>()
+        .unwrap();
+    println!(
+        "{:#?}",
         input
-        .iter()
-        .map(|l| l.parse::<Line>().unwrap())
-        .map(|l| l.included_coordinates())
-        .flatten()
-        .fold(
-            HashMap::<Coordinate, u32>::new(),
-            |mut counts, coordinate| {
-                let count = counts.entry(coordinate).or_insert(0);
-                *count += 1;
+            .iter()
+            .map(|l| l.parse::<Line>().unwrap())
+            .map(|l| l.included_coordinates())
+            .flatten()
+            .fold(
+                HashMap::<Coordinate, u32>::new(),
+                |mut counts, coordinate| {
+                    let count = counts.entry(coordinate).or_insert(0);
+                    *count += 1;
 
-                counts
-            })
-        .into_iter()
-        .filter(|&(_, count)| count > 1)
-        .count());
+                    counts
+                }
+            )
+            .into_iter()
+            .filter(|&(_, count)| count > 1)
+            .count()
+    );
 }

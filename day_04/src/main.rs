@@ -13,7 +13,6 @@ impl BingoNumber {
             is_marked: false,
         }
     }
-
 }
 
 impl From<u32> for BingoNumber {
@@ -115,14 +114,15 @@ fn main() {
         .map(|s| s.parse::<u32>().unwrap())
         .collect::<Vec<_>>();
 
-    let mut boards =
-        parts[1..]
-            .into_iter()
-            .map(|board| board
+    let mut boards = parts[1..]
+        .into_iter()
+        .map(|board| {
+            board
                 .split_terminator('\n')
                 .map(|col| col.split_whitespace().map(|s| s.parse::<u32>().unwrap()))
-                .collect::<Board>())
-            .collect::<Vec<Board>>();
+                .collect::<Board>()
+        })
+        .collect::<Vec<Board>>();
 
     let mut last_number = 0;
 
@@ -140,7 +140,11 @@ fn main() {
     }
     let last_solved = &solved[solved.len() - 1];
 
-    let unmarked_sum: u32 = last_solved.values.iter().filter_map(|bn| if !bn.is_marked { Some(bn.number) } else { None }).sum();
+    let unmarked_sum: u32 = last_solved
+        .values
+        .iter()
+        .filter_map(|bn| if !bn.is_marked { Some(bn.number) } else { None })
+        .sum();
 
     println!("{:#?}", unmarked_sum * last_number);
 }

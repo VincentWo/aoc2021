@@ -1,4 +1,4 @@
-use std::{convert::Infallible, error::Error, ops::Add, iter::Sum, io::BufRead, str::FromStr};
+use std::{convert::Infallible, error::Error, io::BufRead, iter::Sum, ops::Add, str::FromStr};
 
 #[derive(Debug)]
 enum Direction {
@@ -53,7 +53,7 @@ impl Add<Velocity> for Position {
 #[derive(Debug)]
 struct UnknownDirectionError(String);
 
-impl FromStr for Direction { 
+impl FromStr for Direction {
     type Err = UnknownDirectionError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -67,13 +67,8 @@ impl FromStr for Direction {
 }
 
 impl Sum<Velocity> for Position {
-    fn sum<I: Iterator<Item=Velocity>>(iter: I) -> Position {
-        iter.fold(
-            Position::new(),
-            |a, b| {
-                a + b
-            }
-        )
+    fn sum<I: Iterator<Item = Velocity>>(iter: I) -> Position {
+        iter.fold(Position::new(), |a, b| a + b)
     }
 }
 
@@ -86,9 +81,18 @@ impl FromStr for Velocity {
         let amount = components.next().unwrap().parse::<i32>().unwrap();
 
         Ok(match direction {
-            Direction::Forward => Velocity { horizontal: amount, aim: 0 },
-            Direction::Down => Velocity { horizontal: 0, aim: amount },
-            Direction::Up   => Velocity { horizontal: 0, aim: -amount },
+            Direction::Forward => Velocity {
+                horizontal: amount,
+                aim: 0,
+            },
+            Direction::Down => Velocity {
+                horizontal: 0,
+                aim: amount,
+            },
+            Direction::Up => Velocity {
+                horizontal: 0,
+                aim: -amount,
+            },
         })
     }
 }
@@ -97,15 +101,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     let input = include_str!("input");
     let input = std::io::Cursor::new(input);
 
-    let Position { horizontal, vertical, .. } = 
-        input
-            .lines()
-            .collect::<Result<Vec<_>, _>>()?
-            .into_iter()
-            .map(|s| s.parse::<Velocity>())
-            .collect::<Result<Vec<_>, _>>()?
-            .into_iter()
-            .sum::<Position>();
+    let Position {
+        horizontal,
+        vertical,
+        ..
+    } = input
+        .lines()
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .map(|s| s.parse::<Velocity>())
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .sum::<Position>();
 
     println!("{}", horizontal * vertical);
     Ok(())
